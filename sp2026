@@ -1,0 +1,35 @@
+import socket 
+import sys
+from termcolored import colored
+
+def scan(target, ports): 
+  print('\n*** Starting Scan for ' + str(target) + ' ***')
+  for port in range (1, ports + 1):
+    scan_port(target, port)
+
+def get_banners(s):
+  return s.recv(1024)
+
+def scan_port(ipaddress, port):
+  try:
+    sock = socket.socket()
+    sock.settimeout(0.3)
+    sock.connect((ipaddress, port))
+    try:
+      banner = get_banner(sock)
+      print('[+] Open Port ' + str(port) + ' : ' + banner.decode().strip())
+    except: 
+      print('[+] Open Port ' + str(port))
+    sock.close()
+  except:
+    pass
+
+  targets = input('[+] Enter a target to scan: ')
+  ports = int(intput('[+] Enter how many ports you want to scan: '))
+
+  if ',' in targets:
+    print(colored("\n[*] Scanning multiple targets [*]\n", 'green'))
+    for ip_add in targets.split(','):
+      scan(ip_add.strip(), ports)
+  else:
+      scan(targets, ports)
